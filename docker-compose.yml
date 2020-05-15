@@ -1,0 +1,49 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - TZ=`ls -la /etc/localtime | cut -d/ -f8-9`
+    tty: true
+    restart: always
+    user: postgres
+    volumes:
+      - ./postgresql/init:/docker-entrypoint-initdb.d
+      - postgres-db:/var/lib/postgresql/data
+  # pgweb:
+  #   image: sosedoff/pgweb
+  #   container_name: pgweb
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - DATABASE_URL=postgres://postgres:password@postgres:5432/wantedly?sslmode=disable
+  #   links:
+  #     - postgres:postgres
+  #   restart: always
+  #   depends_on:
+  #     - postgres
+  app:
+    build: ./go
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    volumes:
+      - ./go/src:/go/src/workdir/src
+    ports:
+      - "8080:8080"
+    environment:
+      - HOSTNAME=postgres
+      - USER=postgres
+      - DBNAME=judge
+      - PASSWORD=password
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+      - PORT=8080
+      - DB_PORT=5432
+volumes:
+  postgres-db:
+    driver: local
