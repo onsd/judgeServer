@@ -12,5 +12,6 @@ require (
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect
+	golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 )

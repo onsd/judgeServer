@@ -21,8 +21,9 @@ func main() {
 	r.PUT("/questions/:id", updateQuestion)
 	r.DELETE("/questions/:id", deleteQuestion)
 
-	// r.GET("/answers/:id/status", getAnswerStatus)
-	// r.POST("/answers/:id", addNewAnswer)
+	r.GET("/answers", getAnswers)
+	r.GET("/answers/:id/status", getAnswerStatus)
+	r.POST("/answers/:id", addNewAnswer)
 
 	r.Run(":" + os.Getenv("PORT"))
 }
