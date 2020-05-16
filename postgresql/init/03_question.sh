@@ -2,6 +2,7 @@
 psql -U postgres -d judge << "EOSQL"
 create table questions(
   id SERIAL PRIMARY KEY,
+  title varchar(128),
   body varchar(512),
   validation varchar(128),
   input varchar(128),
@@ -12,8 +13,9 @@ create table questions(
 EOSQL
 
 psql -U postgres -d judge << "EOSQL"
-insert into questions(body, validation, input, output, created_at, updated_at) 
+insert into questions(title, body, validation, input, output, created_at, updated_at) 
 values(
+  '駄菓子屋さん',
   '1つX円のお菓子をY個買います。Z円出したときのお釣りを出力してください。',
   'Z > X*Y',
   'X Y Z',
@@ -24,8 +26,9 @@ values(
 EOSQL
 
 psql -U postgres -d judge << "EOSQL"
-insert into questions(body, validation, input, output, created_at, updated_at) 
+insert into questions(title, body, validation, input, output, created_at, updated_at) 
 values(
+  '算数',
   'X+Y の計算をします。',
   '',
   'X Y',

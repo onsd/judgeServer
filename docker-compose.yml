@@ -43,7 +43,7 @@ services:
     environment:
       - HOSTNAME=postgres
       - USER=postgres
-      - DBNAME=judge
+      - DBNAME=wantedly
       - PASSWORD=password
       - CGO_ENABLED=0
       - GO111MODULE=on

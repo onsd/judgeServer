@@ -54,6 +54,9 @@ func GetSubmitForm(c *gin.Context) {
 		"id": 1,
 	})
 }
+func GetQuestionSubmitForm(c *gin.Context) {
+	c.HTML(http.StatusOK, "submitQuestion.html", gin.H{})
+}
 
 func PostSubmit(c *gin.Context) {
 	id := c.Param("id")
@@ -106,8 +109,8 @@ func PostSubmit(c *gin.Context) {
 	}
 	sqs.SendMessage(string(jsonBytes))
 	db.Last(&postedJSON)
-	url := "answers/" + strconv.Itoa(int(sqsData.AnswerID)) + "/status"
-	c.Redirect(http.StatusPermanentRedirect, url)
+	url := "/answers/" + strconv.Itoa(int(sqsData.AnswerID)) + "/status"
+	c.Redirect(302, url)
 }
 
 func GetAnswerStatus(c *gin.Context) {

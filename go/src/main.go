@@ -60,6 +60,7 @@ func main() {
 		main.GET("/submit/:id", index.GetSubmitForm)
 		main.POST("/submit/:id", index.PostSubmit)
 		main.GET("/answers/:id/status", index.GetAnswerStatus)
+		main.GET("/submitquestion", index.GetQuestionSubmitForm)
 
 	}
 	apiGroup := r.Group("/api")

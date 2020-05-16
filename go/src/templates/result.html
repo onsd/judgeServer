@@ -11,6 +11,9 @@
     <pre>{{.answer.Answer}}</pre>
     <h2>ステータス</h2>
     {{.answer.Status}}
+    {{if eq .answer.Status "SUBMIT"}}
+    <a href="javascript:location.reload();">更新する</a>
+    {{end}}
     <h2>結果</h2>
     {{.answer.Result}}
     {{if eq .answer.Status "WA"}}
