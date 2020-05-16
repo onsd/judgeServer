@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Users struct {
+type User struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
@@ -23,7 +23,7 @@ func getUsers(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var users []Users
+	var users []User
 	if err := db.Order("id").Find(&users).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -38,7 +38,7 @@ func getUserByID(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var user Users
+	var user User
 	if err := db.First(&user, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -53,7 +53,7 @@ func addNewUser(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var json Users
+	var json User
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -73,12 +73,12 @@ func updateUser(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var u Users
+	var u User
 	if err := db.First(&u, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
-	var json Users
+	var json User
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -97,7 +97,7 @@ func deleteUser(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var u Users
+	var u User
 	if err := db.First(&u, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return

@@ -33,6 +33,7 @@ services:
     build: ./go
     depends_on:
       - postgres
+      - sqs
     links:
       - postgres:postgres
     volumes:
