@@ -25,6 +25,10 @@ services:
   #   restart: always
   #   depends_on:
   #     - postgres
+  sqs:
+    build: ./elasticMQ
+    ports: 
+      - 9324:9324
   app:
     build: ./go
     depends_on:
@@ -44,6 +48,7 @@ services:
       - GO111MODULE=on
       - PORT=8080
       - DB_PORT=5432
+      - SQS_URL=sqs:9324
 volumes:
   postgres-db:
     driver: local
