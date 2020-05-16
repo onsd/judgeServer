@@ -14,6 +14,14 @@
         <h3>出力</h3>
         {{.question.Output}}
 
+        <h2>サンプルケース</h2>
+        {{range .sampleCases}}
+        <h3>入力例</h3>
+        {{.Input}}
+        <h3>出力例</h3>
+        {{.Output}}
+        {{end}}
+
     <form method="POST" action="/submit/{{.question.ID}}">
         <h2>提出</h2>
         問題番号<br>
@@ -25,16 +33,6 @@
         <br>
         <textarea name="answer" type="text" rows="4" cols="40" > </textarea>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
     </form>
 </html>
-
-<!-- Question struct {
-    ID         int       `json:"id"`
-    Body       string    `json:"body"`
-    Validation string    `json:"validation"`
-    Input      string    `json:"input"`
-    Output     string    `json:"output"`
-    CreatedAt  time.Time `json:"created_at"`
-    UpdatedAt  time.Time `json:"updated_at"`
-} -->

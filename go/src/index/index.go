@@ -38,12 +38,14 @@ func GetQuestionByID(c *gin.Context) {
 	defer db.Close()
 
 	var question types.Question
-	if err := db.First(&question, c.Param("id")).Error; err != nil {
+	if err := db.Preload("SampleCases").First(&question, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println(question.SampleCases)
 	c.HTML(http.StatusOK, "question.html", gin.H{
-		"question": question,
+		"question":    question,
+		"sampleCases": question.SampleCases,
 	})
 }
 
@@ -86,15 +88,26 @@ func PostSubmit(c *gin.Context) {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
 	}
+	var question types.Question
 
-	jsonBytes, err := json.Marshal(postedJSON)
+	if err := db.First(&question, c.Param("id")).Related(&question.TestCases).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	sqsData := types.SQSData{
+		AnswerID:  postedJSON.ID,
+		Answer:    postedJSON.Answer,
+		TestCases: question.TestCases,
+	}
+	jsonBytes, err := json.Marshal(sqsData)
 	if err != nil {
 		fmt.Println("JSON Marshal error:", err)
 		return
 	}
 	sqs.SendMessage(string(jsonBytes))
 	db.Last(&postedJSON)
-	c.JSON(http.StatusOK, postedJSON)
+	url := "answers/" + strconv.Itoa(int(sqsData.AnswerID)) + "/status"
+	c.Redirect(http.StatusPermanentRedirect, url)
 }
 
 func GetAnswerStatus(c *gin.Context) {

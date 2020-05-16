@@ -4,39 +4,62 @@ import os
 import sys
 import subprocess
 import json
+from random import randint
+from time import sleep
 
 import boto3
 import requests
 
 
+"""
+type TestCase struct {
+	gorm.Model
+	QuestionID int
+	Input      string
+	Output     string
+}
 
-def execCode(code, input, expectOutput):
+{'ID': 1, 'CreatedAt': '2020-05-16T12:27:33.630985Z', 'UpdatedAt': '2020-05-16T12:27:33.630985Z', 'DeletedAt': None, 'QuestionID': 1, 'Input': '10 20', 'Output': '30'}
+
+"""
+def execCode(code, testcases):
     path = './code.py'
     
     with open(path, mode='w') as f:
         f.write(code)
-    
-    proc = subprocess.run("python code.py", shell=True,input=input, encoding='utf-8', stdout=subprocess.PIPE)
-    output = proc.stdout.rstrip()
 
-    print(output)
-    print(expectOutput)
-    if(output == expectOutput):
-        return "AC", output
-    else:
-        return "WA", output
+    cnt = 0
+    ac = 0
+    err = []
+    for i in testcases:
+        print(i)
+        cnt = cnt + 1
+        proc = subprocess.run("python code.py", shell=True,input=i['Input'], encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output = proc.stdout.rstrip()
+
+        print(output)
+        print(i['Output'])
+        if(output == i['Output']):
+            ac = ac + 1
+        else:
+            err.append(proc.stderr.rstrip())
+    
+    result = ""
+    for l in list(set(err)):
+        result = result + l
+     
+    return cnt, ac, result
     
 
 
 def main():
     client = boto3.resource('sqs',
-                        endpoint_url=os.getenv("SQS_ENDPOINT"),
-                        region_name=os.getenv("AWS_REGION"),
-                        aws_secret_access_key=os.getenv("AWS_ACCESS_KEY"),
-                        aws_access_key_id=os.getenv("AWS_SECRET_KEY"),
-                        use_ssl=False)
-    queue = client.get_queue_by_name(QueueName='python')
-    print(queue)
+        endpoint_url=os.getenv("SQS_ENDPOINT"),
+        region_name=os.getenv("AWS_REGION"),
+        aws_secret_access_key=os.getenv("AWS_ACCESS_KEY"),
+        aws_access_key_id=os.getenv("AWS_SECRET_KEY"),
+        use_ssl=False)
+
     try:
         # キューの名前を指定してインスタンスを取得
         queue = client.get_queue_by_name(QueueName='python')
@@ -51,34 +74,34 @@ def main():
         if msg_list:
             for message in msg_list:
                 """
-                type Answer struct {
-                    ID         int       `json:"id"`
-                    QuestionID int       `json:"question_id"`
-                    Answer     string    `json:"answer"`
-                    Status     string    `json:"status"`
-                    Result     string    `json:"result"`
-                    Detail     string    `json:"detail"`
-                    CreatedAt  time.Time `json:"created_at"`
-                    UpdatedAt  time.Time `json:"updated_at"`
+                type SQSData struct {
+                    gorm.Model
+                    AnswerID  uint   `json:"answer_id"`
+                    Answer    string `json:"answer"`
+                    TestCases []TestCase
                 }
                 """
                 code = json.loads(message.body)
-
-                result, output = execCode(code['answer'], '1 2 3', 'No')
-                code['result'] = result
-                code['detail'] = output
-                url = os.getenv("SERVER_URL") + "answers/" + str(code['id'])
-                print(url)
                 print(code)
+                cnt, ac, err = execCode(code['answer'], code['TestCases'])
+                code['result'] = "AC" if cnt == ac else "WA"
+                detail = str(ac) + "/" + str(cnt) + "\n" +err
+                code['detail'] = detail.rstrip()
+
+                url = os.getenv("SERVER_URL") + "answers/" + str(code['answer_id'])
                 res = requests.put(url, json.dumps(code))
                 print(res)
+                
                 message.delete()
 
 
         else:
             # メッセージがなくなったらbreak
             print("No remaining message")
-            break
+            time = randint(1,10)
+            print("wait " + str(time) + " sec")
+            sleep(time)
+            
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ FROM golang:1.14 as builder
 
 ADD src /go/src/workdir/src
 
+
 ENV HOSTNAME postgres
 ENV USER postgres
 ENV DBNAME wantedly
@@ -21,6 +22,7 @@ RUN go build -o APIServer
 FROM alpine 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/src/workdir/src/APIServer /APIServer
+ADD src/templates /templates
 EXPOSE 8080
 #ENV PORT 8080
 

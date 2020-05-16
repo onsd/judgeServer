@@ -18,7 +18,7 @@ func GetQuestions(c *gin.Context) {
 	defer db.Close()
 
 	var questions []types.Question
-	if err := db.Preload("TestCases").Preload("SampleCases").Order("id").Find(&questions).Error; err != nil {
+	if err := db.Preload("SampleCases").Order("id").Find(&questions).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}

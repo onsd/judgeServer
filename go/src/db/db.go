@@ -39,6 +39,8 @@ func InitDB(c *gin.Context) {
 		Title:      "算数",
 		Body:       "足し算をしてみましょう。結果を出力してください。",
 		Validation: "X + Y < 10000",
+		Input:      "X Y",
+		Output:     "Z",
 		TestCases: []types.TestCase{
 			{
 				Input:  "10 20",

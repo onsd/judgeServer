@@ -20,12 +20,15 @@ type Question struct {
 	Title       string       `json:"title"`
 	Body        string       `json:"body"`
 	Validation  string       `json:"validation"`
+	Input       string       `json:"input"`
+	Output      string       `json:"output"`
 	TestCases   []TestCase   `json:"testcase" gorm:"foreignkey:QuestionID"`
 	SampleCases []SampleCase `json:"samplecase" gorm:"foreignkey:QuestionID"`
 }
-type sqsData struct {
+
+type SQSData struct {
 	gorm.Model
-	AnswerID  int    `json:"answer_id"`
+	AnswerID  uint   `json:"answer_id"`
 	Answer    string `json:"answer"`
 	TestCases []TestCase
 }
