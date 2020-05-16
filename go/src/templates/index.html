@@ -1,0 +1,25 @@
+<html>
+<h1>ONLINE JUDGE</h1>
+
+<ul>
+    
+    {{range .questions}}
+    <li>
+        <a href="/questions/{{.ID}}">
+        {{.Title}}
+        </a>
+    </li>
+    {{end}}
+</ul>
+
+</html>
+
+<!-- Question struct {
+    ID         int       `json:"id"`
+    Body       string    `json:"body"`
+    Validation string    `json:"validation"`
+    Input      string    `json:"input"`
+    Output     string    `json:"output"`
+    CreatedAt  time.Time `json:"created_at"`
+    UpdatedAt  time.Time `json:"updated_at"`
+} -->

@@ -1,29 +1,23 @@
-package main
+package api
 
 import (
 	"log"
 	"net/http"
-	"time"
+
+	"main/db"
+	"main/types"
 
 	"github.com/gin-gonic/gin"
 )
 
-type User struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-func getUsers(c *gin.Context) {
-	db, err := getDB()
+func GetUsers(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
-		log.Printf("Error at getDB()\n %v", err)
+		log.Printf("Error at db.GetDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var users []User
+	var users []types.User
 	if err := db.Order("id").Find(&users).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -31,14 +25,14 @@ func getUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func getUserByID(c *gin.Context) {
-	db, err := getDB()
+func GetUserByID(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
-		log.Printf("Error at getDB()\n %v", err)
+		log.Printf("Error at db.GetDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var user User
+	var user types.User
 	if err := db.First(&user, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -46,14 +40,14 @@ func getUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func addNewUser(c *gin.Context) {
-	db, err := getDB()
+func AddNewUser(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
-		log.Printf("Error at getDB()\n %v", err)
+		log.Printf("Error at db.GetDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var json User
+	var json types.User
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -66,19 +60,19 @@ func addNewUser(c *gin.Context) {
 	c.JSON(http.StatusOK, json)
 }
 
-func updateUser(c *gin.Context) {
-	db, err := getDB()
+func UpdateUser(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
-		log.Printf("Error at getDB()\n %v", err)
+		log.Printf("Error at db.GetDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var u User
+	var u types.User
 	if err := db.First(&u, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
-	var json User
+	var json types.User
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -90,14 +84,14 @@ func updateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, u)
 }
 
-func deleteUser(c *gin.Context) {
-	db, err := getDB()
+func DeleteUser(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
-		log.Printf("Error at getDB()\n %v", err)
+		log.Printf("Error at db.GetDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var u User
+	var u types.User
 	if err := db.First(&u, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return

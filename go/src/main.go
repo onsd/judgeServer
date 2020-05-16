@@ -4,6 +4,10 @@ import (
 	"os"
 	"regexp"
 
+	"main/api"
+	"main/db"
+	"main/index"
+
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
@@ -27,7 +31,7 @@ func main() {
 		},
 	)
 
-	r := gin.New()
+	r := gin.Default()
 
 	// Add a logger middleware, which:
 	//   - Logs all requests, like a combined access and error log.
@@ -45,24 +49,36 @@ func main() {
 		SkipPath:       []string{"/skip"},
 		SkipPathRegexp: rxURL,
 	}))
+	r.LoadHTMLGlob("templates/*")
 
-	r.GET("/", ping)                   // 挨拶
-	r.GET("/users/:id", getUserByID)   //指定した id の user を表示
-	r.POST("/users", addNewUser)       //user を追加
-	r.PUT("/users/:id", updateUser)    //指定した id の user を更新
-	r.DELETE("/users/:id", deleteUser) //指定した id の user を削除
+	r.GET("/", ping) // 挨拶
+	r.GET("/init", db.InitDB)
+	main := r.Group("/")
+	{
+		main.GET("/index", index.GetIndex)
+		main.GET("/questions/:id", index.GetQuestionByID)
+		main.GET("/submit/:id", index.GetSubmitForm)
+		main.POST("/submit/:id", index.PostSubmit)
+		main.GET("/answers/:id/status", index.GetAnswerStatus)
 
-	r.GET("/questions", getQuestions)
-	r.GET("/questions/:id", getQuestionByID)
-	r.POST("/questions", addNewQuestion)
-	r.PUT("/questions/:id", updateQuestion)
-	r.DELETE("/questions/:id", deleteQuestion)
-
-	r.GET("/answers", getAnswers)
-	r.GET("/answers/:id/status", getAnswerStatus)
-	r.POST("/answers/:id", addNewAnswer)
-	r.PUT("/answers/:id", updateAnswer)
-	r.GET("/answers/:id", getAnswerByID)
+	}
+	apiGroup := r.Group("/api")
+	{
+		apiGroup.GET("/users/:id", api.GetUserByID)   //指定した id の user を表示
+		apiGroup.POST("/users", api.AddNewUser)       //user を追加
+		apiGroup.PUT("/users/:id", api.UpdateUser)    //指定した id の user を更新
+		apiGroup.DELETE("/users/:id", api.DeleteUser) //指定した id の user をapiGroup
+		apiGroup.GET("/questions", api.GetQuestions)
+		apiGroup.GET("/questions/:id", api.GetQuestionByID)
+		apiGroup.POST("/questions", api.AddNewQuestion)
+		apiGroup.PUT("/questions/:id", api.UpdateQuestion)
+		apiGroup.DELETE("/questions/:id", api.DeleteQuestion)
+		apiGroup.GET("/answers", api.GetAnswers)
+		apiGroup.GET("/answers/:id/status", api.GetAnswerStatus)
+		apiGroup.POST("/answers/:id", api.AddNewAnswer)
+		apiGroup.PUT("/answers/:id", api.UpdateAnswer)
+		apiGroup.GET("/answers/:id", api.GetAnswerByID)
+	}
 
 	r.Run(":" + os.Getenv("PORT"))
 }

@@ -1,37 +1,27 @@
-package main
+package api
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"main/db"
 	"main/sqs"
+	"main/types"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Answer struct {
-	ID         int       `json:"id"`
-	QuestionID int       `json:"question_id"`
-	Answer     string    `json:"answer"`
-	Status     string    `json:"status"`
-	Result     string    `json:"result"`
-	Detail     string    `json:"detail"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
-}
-
 // r.GET("/answers/:id/status", getAnswerStatus)
-func getAnswerStatus(c *gin.Context) {
-	db, err := getDB()
+func GetAnswerStatus(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
 		log.Printf("Error at getDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var answer Answer
+	var answer types.Answer
 	if err := db.First(&answer, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -40,15 +30,15 @@ func getAnswerStatus(c *gin.Context) {
 }
 
 // r.POST("/answers/:id", addNewAnswer)
-func addNewAnswer(c *gin.Context) {
+func AddNewAnswer(c *gin.Context) {
 	sqs := sqs.NewSQS("python")
-	db, err := getDB()
+	db, err := db.GetDB()
 	if err != nil {
 		log.Printf("Error at getDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var postedJSON Answer
+	var postedJSON types.Answer
 	if err := c.ShouldBindJSON(&postedJSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -76,28 +66,28 @@ func addNewAnswer(c *gin.Context) {
 	c.JSON(http.StatusOK, postedJSON)
 }
 
-func getAnswers(c *gin.Context) {
-	db, err := getDB()
+func GetAnswers(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
 		log.Printf("Error at getDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var answers []Answer
+	var answers []types.Answer
 	if err := db.Order("id").Find(&answers).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, answers)
 }
-func getAnswerByID(c *gin.Context) {
-	db, err := getDB()
+func GetAnswerByID(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
 		log.Printf("Error at getDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var answer Answer
+	var answer types.Answer
 	if err := db.First(&answer, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -105,19 +95,19 @@ func getAnswerByID(c *gin.Context) {
 	c.JSON(http.StatusOK, answer)
 }
 
-func updateAnswer(c *gin.Context) {
-	db, err := getDB()
+func UpdateAnswer(c *gin.Context) {
+	db, err := db.GetDB()
 	if err != nil {
 		log.Printf("Error at getDB()\n %v", err)
 	}
 	defer db.Close()
 
-	var u Answer
+	var u types.Answer
 	if err := db.First(&u, c.Param("id")).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
-	var postedJSON Answer
+	var postedJSON types.Answer
 	if err := c.BindJSON(&postedJSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
