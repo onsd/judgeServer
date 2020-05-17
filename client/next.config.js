@@ -12,6 +12,7 @@ module.exports = {
       return config
     },
     env: {
-      API_ENDPOINT: isProd? "https://3ddcf818.ngrok.io" : "http://localhost:8080"
+      // API_ENDPOINT: isProd? "https://3ddcf818.ngrok.io" : "https://nullus.serveo.net"
+      API_ENDPOINT: "https://nullus.serveo.net"
     }
   }
