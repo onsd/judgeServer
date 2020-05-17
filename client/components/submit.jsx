@@ -74,6 +74,7 @@ const Form1 = (props) => {
   //   );
     return (
       <form >
+        <h2>回答する</h2>
         <div>
           <select
             value={language}
