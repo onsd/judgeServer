@@ -80,8 +80,8 @@ const createQuestion: React.FC = () => {
             validation: validation,
             input: input,
             output: output,
+            samplecase: samplecase,
             testcase: testcase,
-            samplecase: samplecase
         }
         fetch(process.env.API_ENDPOINT + "/api/questions",
         {
@@ -123,7 +123,7 @@ const createQuestion: React.FC = () => {
                 {
                 samplecase.map((value,index) => 
                     <div key={index+1}>
-                        <h3 key={"samplecase-title-"+index.toString()}>サンプルケース {index}</h3>
+                        <h3 key={"samplecase-title-"+index.toString()}>サンプルケース {index+1}</h3>
                         <h3 key={"samplecase-input-name-"+index.toString()} className={utilStyles.headingLg}>入力</h3>
                         <textarea name="input" key={"samplecase-input-"+index.toString()} cols={100} rows={5} 
                             value={samplecase[index].Input} 
@@ -136,11 +136,13 @@ const createQuestion: React.FC = () => {
                 )
                 }
                 <a onClick={e=>setSamplecase([...samplecase, {Input:"", Output:""}])}>サンプルケースを増やす</a><br/>
+                <a onClick={e=>setSamplecase(samplecase.slice(0,samplecase.length-1))}>サンプルケースを減らす</a>
+
 
                 {
                 testcase.map((value,index) => 
                     <div key={index+1}>
-                        <h3 key={"testcase-title-"+index.toString()}>ジャッジ用テストケース {index}</h3>
+                        <h3 key={"testcase-title-"+index.toString()}>ジャッジ用テストケース {index+1}</h3>
                         <h3 key={"testcase-input-name-"+index.toString()} className={utilStyles.headingLg}>入力</h3>
                         <textarea name="input" key={"testcase-input-"+index.toString()} cols={100} rows={4} 
                             value={testcase[index].Input} 
@@ -153,6 +155,8 @@ const createQuestion: React.FC = () => {
                 )
                 }
                 <a onClick={e=>setTestcase([...testcase, {Input:"", Output:""}])}>テストケースを増やす</a><br/>
+                <a onClick={e=>setTestcase(testcase.slice(0,testcase.length-1))}>テストケースを減らす</a>
+<br/>
 
 
 
