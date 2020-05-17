@@ -41,6 +41,19 @@ services:
       - SQS_REGION=ap-northeast-1
       - AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY
+  worker:
+    build: ./utils
+    depends_on: 
+      - sqs    
+    environment: 
+      - SQS_ENDPOINT=http://sqs:9324/
+      - SQS_REGION=ap-northeast-1
+      - AWS_ACCESS_KEY=TEST
+      - AWS_SECRET_KEY=TEST
+      - AWS_REGION=ap-northeast-1
+      - SERVER_URL=http://server:8080/api/
+      - PORT=8000
+
 volumes:
   postgres-db:
     driver: local
