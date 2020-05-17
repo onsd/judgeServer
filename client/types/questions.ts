@@ -34,4 +34,5 @@ export interface AnswerType {
     status:      string;
     result:      string;
     detail:      string;
+    error:       string;
 }

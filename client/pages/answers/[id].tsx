@@ -32,7 +32,7 @@ const Result: NextPage<InitialProps> = props => {
         {(props.result.status == "SUBMIT")?<a href="javascript:location.reload();">更新する</a>:<div></div>}
         <h3>結果</h3>
         <div>{props.result.result}</div>
-        {(props.result.result !== "AC")?<pre>{props.result.detail}</pre>:<div></div>}
+        {(props.result.result !== "AC")?<pre>{props.result.error}</pre>:<div></div>}
 
     </Layout>
   )
