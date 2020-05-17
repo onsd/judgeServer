@@ -33,7 +33,7 @@ const Question: NextPage<InitialProps> = props => {
         <h3>制約</h3>
         <div>{props.question.validation}</div>
         <h3>入力</h3>
-        <div>{props.question.input}</div>
+        <pre>{props.question.input}</pre>
         <h3>出力</h3>
         <div>{props.question.output}</div>
         {
@@ -41,7 +41,7 @@ const Question: NextPage<InitialProps> = props => {
               <div key={index+1}>
                   <h3 key={"samplecase-title-"+index.toString()}>サンプルケース {index}</h3>
                   <h3 key={"samplecase-input-name-"+index.toString()} >入力</h3>
-                  {value.Input}
+                  <pre>{value.Input}</pre>
                   <h3 key={"samplecase-output-name-"+index.toString()} >出力</h3>  
                   {value.Output}
               </div>      
