@@ -84,9 +84,14 @@ def main():
                 code = json.loads(message.body)
                 print(code)
                 cnt, ac, err = execCode(code['answer'], code['TestCases'])
-                code['result'] = "AC" if cnt == ac else "WA"
-                detail = str(ac) + "/" + str(cnt) + "\n" +err
+                if(err == ""):
+                    code['result'] = "AC" if cnt == ac else "WA"
+                else:
+                    code['result'] = "RE"
+                
+                detail = str(ac) + "/" + str(cnt)
                 code['detail'] = detail.rstrip()
+                code['error'] = err
 
                 url = os.getenv("SERVER_URL") + "answers/" + str(code['answer_id'])
                 res = requests.put(url, json.dumps(code))

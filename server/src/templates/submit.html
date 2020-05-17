@@ -1,0 +1,18 @@
+<html>
+    <head></head>
+    <body>
+        <form  method="POST" action="./{{.id}}">
+            <h2>提出</h2>
+            問題番号<br>
+            <input name="id" type="text" value={{.id}}><br>
+            言語<br>
+            <input name="language" type="text" >
+            <br>  
+            ソースコード
+            <br>
+            <textarea name="answer" type="text" rows="4" cols="40" > </textarea>
+        
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        </form>
+    </body>
+</html>

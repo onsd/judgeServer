@@ -13,24 +13,12 @@ services:
     volumes:
       - ./postgresql/init:/docker-entrypoint-initdb.d
       - postgres-db:/var/lib/postgresql/data
-  # pgweb:
-  #   image: sosedoff/pgweb
-  #   container_name: pgweb
-  #   ports:
-  #     - "8081:8081"
-  #   environment:
-  #     - DATABASE_URL=postgres://postgres:password@postgres:5432/wantedly?sslmode=disable
-  #   links:
-  #     - postgres:postgres
-  #   restart: always
-  #   depends_on:
-  #     - postgres
   sqs:
     build: ./elasticMQ
     ports: 
       - 9324:9324
-  app:
-    build: ./go
+  server:
+    build: ./server
     depends_on:
       - postgres
       - sqs
