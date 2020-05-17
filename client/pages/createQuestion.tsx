@@ -120,26 +120,6 @@ const createQuestion: React.FC = () => {
                 <textarea name="input" id="" cols={100} rows={4} value={input} onChange={e=>setInput(e.target.value)}/>
                 <h2 className={utilStyles.headingLg}>出力例</h2>
                 <textarea name="title" id="" cols={100} rows={4} value={output} onChange={e=>setOutput(e.target.value)}/>
-                {/* <h2 className={utilStyles.headingLg}>テストケース</h2> */}
-
-                {
-                testcase.map((value,index) => 
-                    <div key={index+1}>
-                        <h3 key={"testcase-title-"+index.toString()}>テストケース {index}</h3>
-                        <h3 key={"testcase-input-name-"+index.toString()} className={utilStyles.headingLg}>入力</h3>
-                        <textarea name="input" key={"testcase-input-"+index.toString()} cols={100} rows={4} 
-                            value={testcase[index].Input} 
-                            onChange={e=>updateArray(testcase, index, "Input", e.target.value, setTestcase)}/>
-                        <h3 key={"testcase-output-name-"+index.toString()} className={utilStyles.headingLg}>出力</h3>  
-                        <textarea name="title" key={"testcase-output-"+index.toString()} cols={100} rows={4} 
-                            value={testcase[index].Output} 
-                            onChange={e=>updateArray(testcase, index, "Output", e.target.value, setTestcase)}/>
-                    </div>      
-                )
-                }
-                <a onClick={e=>setTestcase([...testcase, {Input:"", Output:""}])}>テストケースを増やす</a><br/>
-
-
                 {
                 samplecase.map((value,index) => 
                     <div key={index+1}>
@@ -156,6 +136,25 @@ const createQuestion: React.FC = () => {
                 )
                 }
                 <a onClick={e=>setSamplecase([...samplecase, {Input:"", Output:""}])}>サンプルケースを増やす</a><br/>
+
+                {
+                testcase.map((value,index) => 
+                    <div key={index+1}>
+                        <h3 key={"testcase-title-"+index.toString()}>ジャッジ用テストケース {index}</h3>
+                        <h3 key={"testcase-input-name-"+index.toString()} className={utilStyles.headingLg}>入力</h3>
+                        <textarea name="input" key={"testcase-input-"+index.toString()} cols={100} rows={4} 
+                            value={testcase[index].Input} 
+                            onChange={e=>updateArray(testcase, index, "Input", e.target.value, setTestcase)}/>
+                        <h3 key={"testcase-output-name-"+index.toString()} className={utilStyles.headingLg}>出力</h3>  
+                        <textarea name="title" key={"testcase-output-"+index.toString()} cols={100} rows={4} 
+                            value={testcase[index].Output} 
+                            onChange={e=>updateArray(testcase, index, "Output", e.target.value, setTestcase)}/>
+                    </div>      
+                )
+                }
+                <a onClick={e=>setTestcase([...testcase, {Input:"", Output:""}])}>テストケースを増やす</a><br/>
+
+
 
                 <button onClick={submitNewQuestion} >送信</button>
             </section>
