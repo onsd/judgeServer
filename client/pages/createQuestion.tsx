@@ -53,22 +53,26 @@ const createQuestion: React.FC = () => {
 
     const submitNewQuestion = (e) => {
         console.log(title,body,input,output,testcase,samplecase)
+        let flag = false
         if(title == "" || body == "" || input == "" || output == "" ) {
             alert("抜けがあります")
-            return 
+            flag = true
         }else{
             testcase.forEach(i => {
                 if(i.Input == "" || i.Output == ""){
                     alert("抜けがあります")
-                    return
+                    flag = true
                 }
             })
             samplecase.forEach(i => {
                 if(i.Input == "" || i.Output == ""){
                     alert("抜けがあります")
-                    return
+                    flag = true
                 }
             })
+        }
+        if(flag){
+            return
         }
         const question: QuestionType = {
             title:title,

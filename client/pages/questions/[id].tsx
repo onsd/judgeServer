@@ -37,12 +37,12 @@ const Question: NextPage<InitialProps> = props => {
         <h3>出力</h3>
         <div>{props.question.output}</div>
         {
-          props.question.testcase.map((value,index) => 
+          props.question.samplecase.map((value,index) => 
               <div key={index+1}>
-                  <h3 key={"testcase-title-"+index.toString()}>テストケース {index}</h3>
-                  <h3 key={"testcase-input-name-"+index.toString()} >入力</h3>
+                  <h3 key={"samplecase-title-"+index.toString()}>サンプルケース {index}</h3>
+                  <h3 key={"samplecase-input-name-"+index.toString()} >入力</h3>
                   {value.Input}
-                  <h3 key={"testcase-output-name-"+index.toString()} >出力</h3>  
+                  <h3 key={"samplecase-output-name-"+index.toString()} >出力</h3>  
                   {value.Output}
               </div>      
           )

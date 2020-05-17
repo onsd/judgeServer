@@ -49,23 +49,5 @@ Result.getInitialProps = async function(context){
   }
   return props
 }
-// // 最初に実行される。事前ビルドするパスを配列でreturnする。
-// export async function getStaticPaths() {
-//     // zeitが管理するレポジトリを(APIのデフォルトである)30件取得する
-//     const res = await fetch(process.env.API_ENDPOINT + '/api/answers')
-//     const repos = await res.json() as AnswerType[]
-//     // // レポジトリの名前をパスとする
-//     const paths = repos.map(repo => `/answers/${repo.ID}`)
-//     // const paths = [`/answers/1`,`/answers/2`]
-//     // 事前ビルドしたいパスをpathsとして渡す fallbackについては後述
-//     return { paths, fallback: true }
-// }
-
-// export const getStaticProps: GetStaticProps = async context => {
-//   const id = context.params.id
-//   const res = await fetch(process.env.API_ENDPOINT + `/api/answers/${id}`)
-//   const result = await res.json() as AnswerType
-//   return {props:{id, result}}
-// }
 
 export default Result
