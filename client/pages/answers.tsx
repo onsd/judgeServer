@@ -9,7 +9,7 @@ import styles from '../components/layout.module.css'
 
 export default function Answers({ allAnswerData }) {
   return (
-    <Layout home>
+    <Layout home={false}>
       <Head>
         <title>{siteTitle}</title>
       </Head>
@@ -23,14 +23,14 @@ export default function Answers({ allAnswerData }) {
         {allAnswerData.map(answers => (
             <li className={utilStyles.listItem}>
                     <Link href="/answers/[id]" as={`/answers/${answers.ID}`}>
-                            <a>{answers.ID}</a>
+                            <a>回答:{answers.ID}</a>
                     </Link>                
                     <ul　 key={answers.ID}>
                     <li>
-                        {answers.status}
+                        問題の状態：{answers.status}
                     </li>
                     <li>
-                        {answers.result}
+                        結果: {answers.result}
                     </li>
                 </ul>
             </li>

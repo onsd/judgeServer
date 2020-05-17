@@ -35,7 +35,7 @@ const Question: NextPage<InitialProps> = props => {
         <h3>入力</h3>
         <pre>{props.question.input}</pre>
         <h3>出力</h3>
-        <div>{props.question.output}</div>
+        <pre>{props.question.output}</pre>
         {
           props.question.samplecase.map((value,index) => 
               <div key={index+1}>

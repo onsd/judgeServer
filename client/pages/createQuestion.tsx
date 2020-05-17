@@ -35,6 +35,16 @@ import { useRouter } from "next/router";
 //     testcase:   Case[];
 //     samplecase: Case[];
 
+
+const escapeHTML = (str:string) => {
+    str = str.replace(/&/g, '&amp;');
+    str = str.replace(/</g, '&lt;');
+    str = str.replace(/>/g, '&gt;');
+    str = str.replace(/"/g, '&quot;');
+    str = str.replace(/'/g, '&#39;');
+    return str;
+}
+
 const createQuestion: React.FC = () => {
     const router = useRouter()
     const [title, setTitle] = useState<string>("")
@@ -58,46 +68,53 @@ const createQuestion: React.FC = () => {
             alert("抜けがあります")
             flag = true
         }else{
-            testcase.forEach(i => {
+            const sanitizedTestcase = testcase.map(i => {
                 if(i.Input == "" || i.Output == ""){
                     alert("抜けがあります")
                     flag = true
                 }
+                return {
+                    Input: escapeHTML(i.Input),
+                    Output: escapeHTML(i.Output)
+                }
             })
-            samplecase.forEach(i => {
+            const sanitizedSamplecase = samplecase.map(i => {
                 if(i.Input == "" || i.Output == ""){
                     alert("抜けがあります")
                     flag = true
                 }
+                return {
+                    Input: escapeHTML(i.Input),
+                    Output: escapeHTML(i.Output)
+                }
             })
+            if(flag){
+                return
+            }
+            const question: QuestionType = {
+                title: escapeHTML(title),
+                body: escapeHTML(body),
+                validation: validation,
+                input: escapeHTML(input),
+                output: escapeHTML(output),
+                samplecase: sanitizedSamplecase,
+                testcase: sanitizedTestcase,
+            }
+            fetch(process.env.API_ENDPOINT + "/api/questions",
+            {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Accept': 'application/json'
+            },
+            body: JSON.stringify(question)
+        }).then(res => {
+            return res.json()
+        }).then(json => {
+            console.log(json)
+            router.push("/questions/" + json.ID)
+        })
         }
-        if(flag){
-            return
-        }
-        const question: QuestionType = {
-            title:title,
-            body: body,
-            validation: validation,
-            input: input,
-            output: output,
-            samplecase: samplecase,
-            testcase: testcase,
-        }
-        fetch(process.env.API_ENDPOINT + "/api/questions",
-        {
-          method: "POST",
-          headers: {
-           "Content-Type": "application/json; charset=utf-8",
-           'Accept': 'application/json'
-          },
-          body: JSON.stringify(question)
-       }).then(res => {
-          return res.json()
-       }).then(json => {
-         console.log(json)
-         router.push("/questions/" + json.ID)
-       })
-
 
     }
     return(
@@ -106,13 +123,14 @@ const createQuestion: React.FC = () => {
                 <title>問題を作る</title>
             </Head>
             <section className={utilStyles.headingMd}>
-                <p>問題を投稿してください。</p>
+            <p className={utilStyles.lightText}>プレーンテキストのみ投稿可能です。</p>
+            {/* <p className={utilStyles.lightText}>HT</p> */}
 
             </section>
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
                 <h2 className={utilStyles.headingLg}>タイトル</h2>
                 <textarea name="body" id="" cols={100} rows={5} value={title} onChange={e=>setTitle(e.target.value)}/>
-                <h2 className={utilStyles.headingLg}>問題</h2>
+                <h2 className={utilStyles.headingLg}>問題 </h2>
                 <textarea name="body" id="" cols={100} rows={15} value={body} onChange={e=>setBody(e.target.value)}></textarea>
                 <h2 className={utilStyles.headingLg}>制約</h2>
                 <textarea name="input" id="" cols={100} rows={4} value={validation} onChange={e=>setValidation(e.target.value)}/>
