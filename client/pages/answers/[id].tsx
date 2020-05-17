@@ -9,12 +9,13 @@ import SubmitAnswer from '../../components/submit'
 
 
 type InitialProps = {
-  id: number;
+  id: string | string[];
   result: AnswerType;
 };
 
 const Result: NextPage<InitialProps> = props => {
   const router = useRouter()
+  console.log(props)
   if(router.isFallback){
     return <Layout home={false}><div>Loading...</div></Layout>
   }
@@ -30,31 +31,41 @@ const Result: NextPage<InitialProps> = props => {
         <div>{props.result.status}</div>
         {(props.result.status == "SUBMIT")?<a href="javascript:location.reload();">更新する</a>:<div></div>}
         <h3>結果</h3>
-        {props.result.result}
-        {(props.result.result == "WA")?<div>{props.result.detail}</div>:<div></div>}
+        <div>{props.result.result}</div>
+        {(props.result.result == "WA")?<pre>{props.result.detail}</pre>:<div></div>}
 
     </Layout>
   )
 }
 
 
-// 最初に実行される。事前ビルドするパスを配列でreturnする。
-export async function getStaticPaths() {
-    // zeitが管理するレポジトリを(APIのデフォルトである)30件取得する
-    const res = await fetch(process.env.API_ENDPOINT + '/api/answers')
-    const repos = await res.json() as AnswerType[]
-    // // レポジトリの名前をパスとする
-    const paths = repos.map(repo => `/answers/${repo.ID}`)
-    // const paths = [`/answers/1`,`/answers/2`]
-    // 事前ビルドしたいパスをpathsとして渡す fallbackについては後述
-    return { paths, fallback: true }
-}
-
-export const getStaticProps: GetStaticProps = async context => {
-  const id = context.params.id
+Result.getInitialProps = async function(context){
+  const { id } = context.query
   const res = await fetch(process.env.API_ENDPOINT + `/api/answers/${id}`)
   const result = await res.json() as AnswerType
-  return {props:{id, result}}
+  const props :InitialProps = {
+    id: id,
+    result: result
+  }
+  return props
 }
+// // 最初に実行される。事前ビルドするパスを配列でreturnする。
+// export async function getStaticPaths() {
+//     // zeitが管理するレポジトリを(APIのデフォルトである)30件取得する
+//     const res = await fetch(process.env.API_ENDPOINT + '/api/answers')
+//     const repos = await res.json() as AnswerType[]
+//     // // レポジトリの名前をパスとする
+//     const paths = repos.map(repo => `/answers/${repo.ID}`)
+//     // const paths = [`/answers/1`,`/answers/2`]
+//     // 事前ビルドしたいパスをpathsとして渡す fallbackについては後述
+//     return { paths, fallback: true }
+// }
+
+// export const getStaticProps: GetStaticProps = async context => {
+//   const id = context.params.id
+//   const res = await fetch(process.env.API_ENDPOINT + `/api/answers/${id}`)
+//   const result = await res.json() as AnswerType
+//   return {props:{id, result}}
+// }
 
 export default Result
