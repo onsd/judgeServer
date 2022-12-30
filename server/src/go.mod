@@ -3,7 +3,7 @@ module main
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go v1.30.29
+	github.com/aws/aws-sdk-go v1.33.0
 	github.com/denisenkom/go-mssqldb v0.0.0-20200428022330-06a60b6afbbc // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/gin-contrib/cors v1.3.1
@@ -18,7 +18,7 @@ require (
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/rs/zerolog v1.18.0
-	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9
+	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
 
